@@ -70,7 +70,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>E:\works\pogo_api_cpp\proto\proto_cpp;E:\works\pogo_api_cpp;$(ProjectDir)..\3rdparty\msvc14_x86\boost;e:\works\3rdparty\msvc14_x86\protobuf\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)..\3rdparty\msvc14_x86\protobuf\lib\;e:\works\pogo_api_cpp\Debug\;$(ProjectDir)..\3rdparty\msvc14_x86\boost\stage\lib\;$(ProjectDir)..\3rdparty\msvc14_x86\libcurl\lib\;$(ProjectDir)..\3rdparty\msvc14_x86\zlib\lib\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)..\3rdparty\msvc14_x86\protobuf\lib\;$(ProjectDir)Debug\;$(ProjectDir)..\3rdparty\msvc14_x86\boost\stage\lib\;$(ProjectDir)..\3rdparty\msvc14_x86\libcurl\lib\;$(ProjectDir)..\3rdparty\msvc14_x86\zlib\lib\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -119,10 +119,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="bot.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="pokemon_strategy.cpp" />
+    <ClCompile Include="pokestop_strategy.cpp" />
+    <ClCompile Include="timer_task.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="bot.h" />
     <ClInclude Include="config.h" />
+    <ClInclude Include="ibot_strategy.h" />
+    <ClInclude Include="pokemon_strategy.h" />
+    <ClInclude Include="pokestop_strategy.h" />
+    <ClInclude Include="timer_task.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
