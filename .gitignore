@@ -1,0 +1,8 @@
+[Dd]ebug*/
+[Rr]elease*/
+.vs/
+*.opendb
+*.user
+config.h
+*.db
+*.dll
