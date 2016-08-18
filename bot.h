@@ -4,6 +4,8 @@
 #include <memory>
 #include "timer_task.h"
 #include "ibot_strategy.h"
+#include <atomic>
+#include "config.h"
 
 struct distancer
 {
@@ -13,9 +15,13 @@ struct distancer
 		coordinate delta_dist = { target.latitude - pos.latitude, target.longitude - pos.longitude, 0 };
 		double time = (timestamp() - last_time) / 1000.0; // sec
 		last_time = timestamp();
-		double distance = (speed * time) / 1000.0;
-		auto k = distance / dist_target;
 
+		double rspeed = static_cast<double>(rand() % 101) / 10.0; //[0 .. 100]
+		double s = (speed + rspeed) * (1000.0 / (60.0 * 60.0));
+		double distance = (s * time) / 1000.0;
+		auto k = dist_target == 0.0 ? 0.0 : distance / dist_target;
+
+		k += static_cast<double>(rand() % 101 - 50) / 100000.0; // [-50 .. 50]
 		if (k < 1.0)
 		{
 			delta_dist.latitude *= k;
@@ -25,7 +31,7 @@ struct distancer
 		return{ pos.latitude + delta_dist.latitude, pos.longitude + delta_dist.longitude, 0 };
 	}
 
-	double speed = 5; // m/sec
+	double speed = 15.0; // km/h  
 	uint64_t last_time = timestamp();
 };
 
@@ -37,6 +43,10 @@ public:
 
 	void run();
 
+	void stop();
+
+	const coordinate &pos() const;
+
 private:
 	std::unique_ptr<client> m_client;
 	timer_task m_timer_task;
@@ -47,11 +57,15 @@ private:
 
 	pogo::GetInventoryResponse m_inventory;
 
-	std::unique_ptr<ibot_strategy> m_pokestop_strategy;
-	std::unique_ptr<ibot_strategy> m_pokemon_strategy;
+	std::vector<std::unique_ptr<ibot_strategy>> m_strategy;
+
+	std::atomic<bool> m_closed = false;
+
+	config m_config;
 
 private:
 	void map_objects_updated();
 	void inventory_updated();
+
 };
 

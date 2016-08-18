@@ -25,7 +25,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
@@ -69,7 +69,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>E:\works\pogo_api_cpp\proto\proto_cpp;E:\works\pogo_api_cpp;$(ProjectDir)..\3rdparty\msvc14_x86\boost;e:\works\3rdparty\msvc14_x86\protobuf\;$(IncludePath)</IncludePath>
+    <IncludePath>E:\works\pogo_api_cpp\proto\proto_cpp;E:\works\pogo_api_cpp;$(ProjectDir)..\3rdparty\msvc14_x86\boost;e:\works\3rdparty\msvc14_x86\protobuf\;e:\works\3rdparty\msvc14_x86\rapidjson\;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)..\3rdparty\msvc14_x86\protobuf\lib\;$(ProjectDir)Debug\;$(ProjectDir)..\3rdparty\msvc14_x86\boost\stage\lib\;$(ProjectDir)..\3rdparty\msvc14_x86\libcurl\lib\;$(ProjectDir)..\3rdparty\msvc14_x86\zlib\lib\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -120,10 +120,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="bot.cpp" />
+    <ClCompile Include="config.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pokemon_strategy.cpp" />
     <ClCompile Include="pokestop_strategy.cpp" />
+    <ClCompile Include="target_strategy.cpp" />
     <ClCompile Include="timer_task.cpp" />
+    <ClCompile Include="wander_strategy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bot.h" />
@@ -131,7 +134,9 @@
     <ClInclude Include="ibot_strategy.h" />
     <ClInclude Include="pokemon_strategy.h" />
     <ClInclude Include="pokestop_strategy.h" />
+    <ClInclude Include="target_strategy.h" />
     <ClInclude Include="timer_task.h" />
+    <ClInclude Include="wander_strategy.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

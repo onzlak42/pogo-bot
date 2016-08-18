@@ -3,6 +3,6 @@
 .vs/
 *.opendb
 *.user
-config.h
 *.db
 *.dll
+config.ini

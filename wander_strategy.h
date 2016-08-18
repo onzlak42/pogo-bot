@@ -1,11 +1,12 @@
 #pragma once
 #include "ibot_strategy.h"
 
-class pokemon_strategy : public ibot_strategy
+class wander_strategy : public ibot_strategy
 {
 public:
 
-	// Идем к ближайшему покемону.
+	// Если у нас есть точка в радиусе и мы не дошли до нее, идем туда.
+	// Иначе формируем новую точку в радиусе.
 	boost::optional<coordinate> find_target(client &m_client, const pogo::GetMapObjectsResponse &map) override;
 
 	void inventory_exec(client &m_client, pogo::GetInventoryResponse &inventory) override;
@@ -14,9 +15,7 @@ public:
 	void map_exec(client &m_client, pogo::GetMapObjectsResponse &map) override;
 
 private:
-
-	boost::optional<coordinate> find_wild(client &m_client, const pogo::GetMapObjectsResponse &map);
-	boost::optional<coordinate> find_nearby(client &m_client, const pogo::GetMapObjectsResponse &map);
-
+	const uint32_t radius = 400; // in meters
+	boost::optional<coordinate> m_target;
 };
 

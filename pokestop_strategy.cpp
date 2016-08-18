@@ -65,6 +65,8 @@ void pokestop_strategy::inventory_exec(client &m_client, pogo::GetInventoryRespo
 	{
 		m_strategy_exec = false;
 	}
+
+	m_strategy_exec = true;
 }
 
 void pokestop_strategy::map_exec(client &m_client, pogo::GetMapObjectsResponse &map)

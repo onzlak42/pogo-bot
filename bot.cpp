@@ -5,6 +5,9 @@
 #include <iostream>
 #include "pokestop_strategy.h"
 #include "pokemon_strategy.h"
+#include <fstream>
+#include "wander_strategy.h"
+#include "target_strategy.h"
 
 // Основная идея:
 // Есть три этапа: изучение инвентаря, сканирование карты и выбор цели.
@@ -17,24 +20,27 @@
 // координаты новой цели.
 
 bot::bot()
+	: m_config("config.ini")
 {
-	m_client = std::move(std::make_unique<decltype(m_client)::element_type>(coordinate{ config::pos.lat, config::pos.lon, 10.0 }));
+	m_client = std::move(std::make_unique<decltype(m_client)::element_type>(coordinate{ m_config.latitude(), m_config.longitude(), 10.0 }));
 	m_target_pos = m_client->get_position();
 	m_distancer.speed = ((20.0 * 1000.0) / 60.0) / 60.0;
 
-	m_pokestop_strategy = std::move(std::make_unique<pokestop_strategy>());
-	m_pokemon_strategy = std::move(std::make_unique<pokemon_strategy>());
-
 	m_client->set_position(m_distancer(m_client->get_position(), m_target_pos));
-	m_client->authorize(config::user, config::pass);
+	m_client->authorize(m_config.login(), m_config.password());
 	m_client->set_server();
 	auto player = m_client->get_player();
 	m_client->get_settings();
 
 	std::cout << "username: " << player.player_data().username() << std::endl;
 
+	m_strategy.push_back(std::move(std::make_unique<target_strategy>(coordinate{ m_config.target_lat(), m_config.target_lon() , 0})));
+	m_strategy.push_back(std::move(std::make_unique<pokestop_strategy>()));
+	m_strategy.push_back(std::move(std::make_unique<pokemon_strategy>()));
+	m_strategy.push_back(std::move(std::make_unique<wander_strategy>()));
+
 	// Периодически обновляем карту.
-	m_timer_task.call([this]()
+	m_timer_task.call([this]
 	{
 		m_client->set_position(m_distancer(m_client->get_position(), m_target_pos));
 		m_client->update_position();
@@ -43,12 +49,17 @@ bot::bot()
 	}, 10.0, 0);
 
 	// Периодически обновляем инвентарь.
-	m_timer_task.call([this]()
+	m_timer_task.call([this]
 	{
 		m_client->set_position(m_distancer(m_client->get_position(), m_target_pos));
 		m_inventory = m_client->get_inventory();
 		inventory_updated();
 	}, 5.0, 0);
+
+	m_timer_task.call([this]
+	{
+		m_config.save();
+	}, 10.0, 0);
 }
 
 
@@ -58,11 +69,24 @@ bot::~bot()
 
 void bot::run()
 {
-	while (true)
+	while (!m_closed)
 	{
 		m_timer_task.poll();
+		const auto &pos = m_client->get_position();
+		m_config.latitude(pos.latitude);
+		m_config.longitude(pos.longitude);
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 	}
+}
+
+void bot::stop()
+{
+	m_closed = true;
+}
+
+const coordinate & bot::pos() const
+{
+	return m_client->get_position();
 }
 
 void bot::map_objects_updated()
@@ -71,26 +95,26 @@ void bot::map_objects_updated()
 	// Ловим покемонов.
 	// Захватываем гимы.
 	m_client->set_position(m_distancer(m_client->get_position(), m_target_pos));
+
 	double dist_target = distance_earth(m_target_pos.latitude, m_target_pos.longitude,
 		m_client->get_position().latitude, m_client->get_position().longitude);
 	std::cout << "dist: " << dist_target << std::endl;
-	m_pokestop_strategy->map_exec(*m_client, m_map_objects);
-	m_pokemon_strategy->map_exec(*m_client, m_map_objects);
+
+	for (auto &i : m_strategy)
+	{
+		i->map_exec(*m_client, m_map_objects);
+	}
 
 	// Ищем новую цель.
 	m_client->set_position(m_distancer(m_client->get_position(), m_target_pos));
-	auto target = m_pokestop_strategy->find_target(*m_client, m_map_objects);
-	if (target)
+	for (auto &i : m_strategy)
 	{
-		m_target_pos = *target;
-		return;
-	}
-	target = m_pokemon_strategy->find_target(*m_client, m_map_objects);
-	if (target)
-	{
-		m_target_pos = *target;
-		std::cout << "target: [" << m_target_pos.latitude << "][" << m_target_pos.longitude << "]" << std::endl;
-		return;
+		if (auto target = i->find_target(*m_client, m_map_objects))
+		{
+			m_target_pos = *target;
+			std::cout << "target: [" << m_target_pos.latitude << "][" << m_target_pos.longitude << "]" << std::endl;
+			break;
+		}
 	}
 }
 
@@ -100,7 +124,11 @@ void bot::inventory_updated()
 	// Эволюционируем покемонов.
 	// Трансферим ненужных покемонов.
 	m_client->set_position(m_distancer(m_client->get_position(), m_target_pos));
-	m_pokestop_strategy->inventory_exec(*m_client, m_inventory);
-	m_pokemon_strategy->inventory_exec(*m_client, m_inventory);
+	for (auto &i : m_strategy)
+	{
+		i->inventory_exec(*m_client, m_inventory);
+	}
 }
+
+
 
