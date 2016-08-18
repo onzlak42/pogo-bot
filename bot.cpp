@@ -30,9 +30,23 @@ bot::bot()
 	m_client->authorize(m_config.login(), m_config.password());
 	m_client->set_server();
 	auto player = m_client->get_player();
-	m_client->get_settings();
+	auto settings = m_client->get_settings();
 
+	auto inventory = m_client->get_inventory();
+	for (const auto &i : inventory.inventory_delta().inventory_items())
+	{
+		if (i.has_inventory_item_data())
+		{
+			if (i.inventory_item_data().has_player_stats())
+			{
+				const auto &stats = i.inventory_item_data().player_stats();
+				std::cout << "level: " << stats.level() << " xp: " << stats.experience() << std::endl;
+			}
+		}
+	}
+	
 	std::cout << "username: " << player.player_data().username() << std::endl;
+
 
 	m_strategy.push_back(std::move(std::make_unique<target_strategy>(coordinate{ m_config.target_lat(), m_config.target_lon() , 0})));
 	m_strategy.push_back(std::move(std::make_unique<pokestop_strategy>()));
