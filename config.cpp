@@ -22,7 +22,7 @@ void config::load()
 	{
 		rapidjson::Document doc;
 		m_file.seekg(0, std::ios::end);
-		auto size = m_file.tellg();
+		auto size = static_cast<size_t>(m_file.tellg());
 		m_file.seekg(0, std::ios::beg);
 		std::string data(size, 0);
 		m_file.read(&data[0], size);

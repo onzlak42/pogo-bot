@@ -4,7 +4,7 @@
 
 boost::optional<coordinate> wander_strategy::find_target(client &m_client, const pogo::GetMapObjectsResponse &map)
 {
-	srand(time(nullptr));
+	srand(static_cast<unsigned int>(time(nullptr)));
 
 	const auto &my_pos = m_client.get_position();
 

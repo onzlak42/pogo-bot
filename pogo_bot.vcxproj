@@ -69,8 +69,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>E:\works\pogo_api_cpp\proto\proto_cpp;E:\works\pogo_api_cpp;$(ProjectDir)..\3rdparty\msvc14_x86\boost;e:\works\3rdparty\msvc14_x86\protobuf\;e:\works\3rdparty\msvc14_x86\rapidjson\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)..\3rdparty\msvc14_x86\protobuf\lib\;$(ProjectDir)Debug\;$(ProjectDir)..\3rdparty\msvc14_x86\boost\stage\lib\;$(ProjectDir)..\3rdparty\msvc14_x86\libcurl\lib\;$(ProjectDir)..\3rdparty\msvc14_x86\zlib\lib\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)..\pogo_api_cpp\proto\proto_cpp;$(ProjectDir)..\pogo_api_cpp;$(ProjectDir)..\pogo_libs\boost;$(ProjectDir)..\pogo_libs\protobuf;$(ProjectDir)..\pogo_libs\rapidjson;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)..\pogo_libs\protobuf\lib;$(ProjectDir)..\pogo_libs\boost\stage\lib;$(ProjectDir)..\pogo_libs\libcurl\lib;$(ProjectDir)..\pogo_libs\zlib\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
