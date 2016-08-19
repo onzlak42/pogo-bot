@@ -1,7 +1,7 @@
 #pragma once
 
-#include "client.h"
 #include "pogo_proto.h"
+#include "client.h"
 #include <boost/optional.hpp>
 #include "util.h"
 

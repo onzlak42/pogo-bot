@@ -1,10 +1,10 @@
 #pragma once
 
-#include "client.h"
-#include <memory>
-#include "timer_task.h"
-#include "ibot_strategy.h"
 #include <atomic>
+#include <memory>
+#include "client.h"
+#include "ibot_strategy.h"
+#include "timer_task.h"
 #include "config.h"
 
 struct distancer

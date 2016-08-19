@@ -1,10 +1,10 @@
+#include "bot.h"
 #include <stdlib.h>
-#include "client.h"
 #include <iostream>
 #include <tuple>
 #include <boost\timer.hpp>
 #include "config.h"
-#include "bot.h"
+#include "client.h"
 #include <thread>
 
 
